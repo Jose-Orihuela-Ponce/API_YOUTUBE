@@ -1,0 +1,44 @@
+# Entornos virtuales
+env/
+venv/
+ENV/
+.env
+.venv
+
+# Archivos de Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración del IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de respaldo
+*.bak
+*.backup
+
+# Archivos de distribución
+dist/
+build/
+*.egg-info/
+
+# Archivos específicos del proyecto (opcional)
+downloads/
+videos/
+*.mp4
+*.mkv
+*.avi
