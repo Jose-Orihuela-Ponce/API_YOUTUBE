@@ -12,9 +12,10 @@ print(f"Descargando video desde: {video_url}")
 # Configuración de descarga para 720p
 output_filename = "C:/Users/jose/Downloads/%(title)s.%(ext)s"
 ydl_opts = {
-    "format": "bestvideo[height<=720]+bestaudio/best[height<=720]",
+    "format": "bv*[height<=720]+ba/b[height<=720]",
     "merge_output_format": "mp4",
     "outtmpl": output_filename,
+    "js_runtimes": {"node": {}},
     "ffmpeg_location": "C:/ffmpeg/bin",
     "noplaylist": True,  # Solo descargar el video individual, no la playlist
     "quiet": False,      # Cambiar a True para menos mensajes
@@ -50,4 +51,4 @@ if __name__ == "__main__":
 """
 
 # Comando para ejecutar:
-# python main.py 'https://www.youtube.com/watch?v=Zv1QV6lrc_Y&list=RDZv1QV6lrc_Y&start_radio=1'
+# python main.py 'https://www.youtube.com/watch?v=yOjuwDZh_q0'

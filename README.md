@@ -1,86 +1,104 @@
-# YouTube Video Downloader
+# Descargador portable de videos
 
-Un script simple para descargar videos de YouTube en formato MP4 con calidad 720p.
+Aplicación de consola para Windows que descarga videos de YouTube, TikTok y Facebook. El programa principal es `descargar.py`; también se puede empaquetar como un ejecutable de un solo archivo para usarlo sin instalar Python en la PC de destino.
 
-## Requisitos
+## Funciones
 
-- Python 3.7 o superior
-- FFmpeg instalado en tu sistema
+- Detecta la plataforma desde la URL.
+- YouTube: descarga hasta 720p.
+- TikTok: solicita la mejor calidad disponible y usa un encabezado de navegador.
+- Facebook: solicita la mejor calidad disponible y genera un nombre de archivo único.
+- Guarda los videos en la carpeta `Descargas` del usuario.
+- Incluye un menú para descargar otro video, actualizar `yt-dlp` o cerrar.
+- `main_2.py` se mantiene como script separado para YouTube en máxima calidad.
 
-## Instalación
+## Requisitos en otra PC
 
-1. Clona este repositorio:
+Para ejecutar `Descargar.exe` no hace falta instalar Python. Sí se necesita:
 
-```bash
-git clone https://github.com/tu-usuario/youtube-downloader.git
-cd youtube-downloader
+- Windows de 64 bits.
+- FFmpeg, necesario para combinar audio y video. La aplicación lo busca en `PATH`, junto al ejecutable, en `ffmpeg\bin` junto al ejecutable y en `C:\ffmpeg\bin`.
+- Node.js visible en `PATH` o `node.exe` junto a `Descargar.exe` para descargas de YouTube.
+
+TikTok y Facebook no requieren Node.js, pero sí FFmpeg para combinar las pistas. Si se desea mover la aplicación como carpeta portable, se puede organizar así:
+
+```text
+Descargador/
+├── Descargar.exe
+├── node.exe                 # para YouTube, o instalar Node.js en el sistema
+└── ffmpeg/
+    └── bin/
+        ├── ffmpeg.exe
+        ├── ffprobe.exe
+        └── archivos auxiliares de esa distribución de FFmpeg
 ```
 
-2. Crea un entorno virtual:
+También se pueden instalar FFmpeg y Node.js en el sistema y agregarlos a `PATH`. `yt-dlp.exe` viene incluido dentro de `Descargar.exe`; la primera ejecución lo copia al perfil local del usuario para que la opción de actualización pueda mantenerlo al día.
 
-```bash
-python -m venv env
+## Crear el ejecutable portable
+
+En la PC de desarrollo se necesita Python 3.10 o superior y acceso a Internet para descargar el binario oficial de `yt-dlp`.
+
+Desde PowerShell, en la carpeta del proyecto:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build_portable.ps1
 ```
 
-3. Activa el entorno virtual:
+El script crea el entorno `.venv`, instala las dependencias de construcción, descarga `yt-dlp.exe` desde los releases oficiales si aún no existe y genera:
 
-```bash
-# Windows
-env\Scripts\activate
-
-# Linux/Mac
-source env/bin/activate
+```text
+dist\Descargar.exe
 ```
 
-4. Instala las dependencias:
+Para volver a descargar la versión más reciente de `yt-dlp` antes de construir:
 
-```bash
-pip install -r requirements.txt
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build_portable.ps1 -RefreshYtDlp
 ```
 
-## Configuración
+El ejecutable se puede copiar al Escritorio o a una carpeta portable. FFmpeg y Node.js no se incluyen en el `.exe`; deben instalarse en el equipo o colocarse junto al programa como se describe arriba.
 
-Antes de usar el script, asegúrate de:
+## Ejecutar desde el código fuente
 
-1. Tener FFmpeg instalado y configurado en tu PATH, o modificar la ruta en el código:
+El script de empaquetado descarga `vendor\yt-dlp.exe`, que también permite ejecutar el menú directamente desde el código:
 
-```python
-"ffmpeg_location": "C:/ffmpeg/bin"  # Cambia esta ruta según tu instalación
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build_portable.ps1
+python .\descargar.py
 ```
 
-2. Modificar la ruta de descarga en el código:
+Para usar los scripts Python que llaman directamente a la biblioteca `yt-dlp`:
 
-```python
-output_filename = "C:/Users/jose/Downloads/video_10.%(ext)s"  # Cambia esta ruta
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 ```
 
-## Uso
+Luego se puede ejecutar, por ejemplo:
 
-```bash
-python main.py 'https://www.youtube.com/watch?v=VIDEO_ID'
+```powershell
+python .\main.py "https://www.youtube.com/watch?v=VIDEO_ID"
+python .\main_2.py "https://www.youtube.com/watch?v=VIDEO_ID"
+python .\tiktok.py "URL_DE_TIKTOK"
+python .\facebook.py "URL_DE_FACEBOOK"
 ```
 
-## Ejemplo
+`main.py`, `tiktok.py` y `facebook.py` son scripts antiguos separados; para el uso normal se recomienda `Descargar.exe` o `descargar.py`. `main_2.py` sigue siendo el script independiente de YouTube a máxima calidad.
 
-```bash
-python main.py 'https://www.youtube.com/watch?v=nGsUV5sY1Ps'
-```
+## Archivos principales
 
-## Características
+| Archivo | Propósito |
+| --- | --- |
+| `descargar.py` | Menú unificado y lógica de empaquetado del descargador principal. |
+| `build_portable.ps1` | Prepara el entorno, obtiene `yt-dlp.exe` y construye el ejecutable Windows. |
+| `main_2.py` | Descarga independiente de YouTube a máxima calidad. |
+| `main.py`, `tiktok.py`, `facebook.py` | Scripts previos de descarga por plataforma. |
+| `requirements.txt` | Dependencias para ejecutar los scripts Python antiguos. |
+| `requirements-build.txt` | PyInstaller requerido para generar el `.exe`. |
+| `AGENTS.md` | Guía de arquitectura e instrucciones para agentes que mantengan el proyecto. |
 
-- Descarga en calidad 720p
-- Convierte automáticamente a MP4
-- Combina video y audio de la mejor calidad disponible
-- Manejo básico de errores
+## Uso responsable
 
-## Licencia
-
-Este proyecto es de código abierto y está disponible bajo la [Licencia MIT](LICENSE).
-
-## Contribuciones
-
-Las contribuciones son bienvenidas. Por favor, abre un issue o envía un pull request.
-
-## Nota
-
-Este script es solo para uso educativo y personal. Respeta los términos de servicio de YouTube y las leyes de derechos de autor de tu país.
+Descarga contenido únicamente cuando tengas derecho a hacerlo. Respeta las condiciones de uso de cada plataforma y las leyes de derechos de autor aplicables.

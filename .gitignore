@@ -4,6 +4,8 @@ venv/
 ENV/
 .env
 .venv
+.env.*
+!.env.example
 
 # Archivos de Python compilados
 __pycache__/
@@ -17,6 +19,7 @@ Thumbs.db
 # Archivos de configuración del IDE
 .vscode/
 .idea/
+*.code-workspace
 *.swp
 *.swo
 
@@ -35,6 +38,10 @@ Thumbs.db
 dist/
 build/
 *.egg-info/
+*.spec
+
+# Binarios y dependencias descargados para empaquetar
+vendor/yt-dlp.exe
 
 # Archivos específicos del proyecto (opcional)
 downloads/
